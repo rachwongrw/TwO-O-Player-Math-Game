@@ -7,8 +7,6 @@ class Player
 
   def initialize(name)
     @name = name
-    @lives = 3
-    @points = 0
   end
 
   def get_points
@@ -18,5 +16,12 @@ class Player
   def lose_a_life
     @lives -= 1
   end
+  
+  def end_the_game
+    if lives == 0
+      end_game("No more lives!")
+    end
+  end
+
   
 end
