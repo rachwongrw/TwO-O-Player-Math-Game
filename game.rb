@@ -1,51 +1,58 @@
 class Game
-  def initialize(players)
-    @players = players
-    @lives_game = 3
-    @points_game = 0
+  attr_accessor :lose_a_life, :current_lives, :check_answer
+  
+  def initialize
+    @players = [
+      Player.new("Player 1"),
+      Player.new("Player 2")
+    ]
+    @current_player = @players[rand(0..1)]
+    puts "------------ START ------------"
   end 
 
   def start_game
-    current_player = @players.sample
-    puts "Starting Game..."
-    puts "Hello #{current_player.name} \nLives: #{@lives_game} \nPoints: #{@points_game}"
-    puts "Please pick two numbers between 1 and 20"
-
-    print "First Number > "
-
-    first_number = $stdin.gets.chomp
-    first_number = first_number.to_i
-      if (1..20).include?(first_number)
-        puts "Second Number > "
-        
-        second_number = $stdin.gets.chomp
-        second_number = second_number.to_i
-
-        if (1..20).include?(second_number)
-          puts "Great! Let's ask you your first Q."
-        else
-          end_game("Really? It needed to be between 1 and 20.")
-        end
-      else
-        end_game("Really? It needed to be between 1 and 20.")
-      end
+    while @players[0].lives > 0 && @players[1].lives > 0
+      player = @current_player
+      q1 = Question.new
+      puts "#{@current_player.name}: #{q1.ask_q}" 
+      playeranswer = $stdin.gets.chomp.to_i
+      check_answer(playeranswer, q1)
+    end
   end  
 
-  def end_game(why) #why is the game ending?
-    puts why, "Game Over!"
+  def change_players
+    if @current_player == @players[0]
+      @current_player = @players[1]
+    elsif @current_player == @players[1]
+      @current_player = @players[0]
+    end
+  end
+
+  def check_answer(playeranswer, q1)
+    if q1.answer == playeranswer
+      puts "YES! That is correct"
+      change_players
+      start_game
+    else
+      puts "NO! That is incorrect"
+      @current_player.lose_a_life
+      puts "--------- SCORE COUNT ---------"
+      puts "Player 1: #{@players[0].lives}/3 vs. Player 2: #{@players[1].lives}/3"
+      if @current_player.alive?
+        change_players
+        puts "----------- NEW TURN ----------"
+        start_game
+      else
+        puts "----!!!!NO MORE LIVES!!!!----"
+        game_over
+      end
+    end
+  end
+
+  def game_over
+    puts "--------- GAME OVER ---------"
     exit(0)
   end 
+
 end
 
-
-# if first_number >= ("1") && first_number <= ("20")
-#   number1 = first_number.to_i
-#   puts "Second Number > "
-
-#   second_number = $stdin.gets.chomp
-#   if second_number >= ("1") && second_number <= ("20")
-#     number2 = second_number.to_i
-#     puts "Great! Let's ask you your first Q."
-#     question_1
-#   end
-# end

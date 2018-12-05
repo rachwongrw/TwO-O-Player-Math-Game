@@ -4,24 +4,21 @@
 
 class Player
   attr_reader :name
+  attr_accessor :change_players, :game_over, :lives
 
   def initialize(name)
     @name = name
+    @lives = 3
   end
-
-  def get_points
-    @points += 1
-  end 
 
   def lose_a_life
     @lives -= 1
   end
-  
-  def end_the_game
-    if lives == 0
-      end_game("No more lives!")
-    end
+
+  def alive?
+    @lives > 0 
   end
 
-  
 end
+
+# Only the player controls its own state - its lives.
